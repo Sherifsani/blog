@@ -16,8 +16,7 @@ public class PostController {
 
     @PostMapping("/api/posts/add")
     public String createPost(@RequestBody Post post) {
-        postService.createPost(post);
-        return "Post created successfully!";
+        return postService.createPost(post);
     }
 
     @GetMapping("/api/posts/get")

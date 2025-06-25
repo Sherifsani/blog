@@ -15,6 +15,9 @@ public class User {
     @Column
     private String username;
 
+    @Column
+    private String bio;
+
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Post> posts;
@@ -25,6 +28,10 @@ public class User {
     private List<Comment> comments;
 
     public User() {
+    }
+
+    public User(String username) {
+        this.username = username;
     }
 
     public Integer getId() {
@@ -59,7 +66,12 @@ public class User {
         this.comments = comments;
     }
 
-    public User(String username) {
-        this.username = username;
+    public String getBio() {
+        return bio;
     }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
 }

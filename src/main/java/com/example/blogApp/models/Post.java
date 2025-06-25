@@ -1,5 +1,6 @@
 package com.example.blogApp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,6 +33,20 @@ public class Post {
     @OneToMany(mappedBy = "post")
     @JsonManagedReference
     private List<Comment> comments;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 
     public Post() {}

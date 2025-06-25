@@ -18,6 +18,13 @@ public class Comment {
     @JsonBackReference
     private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user;
+
+
+
     public Comment() {
     }
 
@@ -48,5 +55,12 @@ public class Comment {
 
     public void setBody(String body) {
         this.body = body;
+    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

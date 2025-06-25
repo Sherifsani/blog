@@ -25,11 +25,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String createUser(User  user){
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        userRepository.save(user);
         return "user created successfully";
     }
 
@@ -44,11 +40,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User editUser(Integer id, String name, String bio){
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
-        user.setBio(bio);
-        user.setUsername(name);
-        userRepository.save(user);
+    public User editUser(Integer id, User user){
+        User targetUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
+        targetUser.setBio(user.getBio());
+        targetUser.setUsername(user.getUsername());
+        userRepository.save(targetUser);
         return user;
     }
 }

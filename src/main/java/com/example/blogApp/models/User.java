@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "appUsers")
 public class User {
     @Id
     @GeneratedValue
@@ -18,12 +18,12 @@ public class User {
     @Column
     private String bio;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "appUser")
     @JsonManagedReference
     private List<Post> posts;
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "appUser")
     @JsonManagedReference
     private List<Comment> comments;
 

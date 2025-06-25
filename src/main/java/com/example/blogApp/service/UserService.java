@@ -9,5 +9,5 @@ public interface UserService {
     User getOneUser(Integer id);
     String createUser(User user);
     String deleteUser(Integer id);
-    User editUser(Integer id, String name, String bio);
+    User editUser(Integer id, User user);
 }

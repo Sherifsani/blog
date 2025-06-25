@@ -2,6 +2,7 @@ package com.example.blogApp.controller;
 
 import com.example.blogApp.models.User;
 import com.example.blogApp.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,18 +26,23 @@ public class UserController {
         return userService.getOneUser(id);
     }
 
-    @PostMapping("/create")
-    public String createUser(@RequestBody User user){
-        return userService.createUser(user);
+    @PostMapping(value = "/create", consumes = "application/json", produces = "text/plain")
+    public ResponseEntity<String> createUser(@RequestBody User user) {
+        String message = userService.createUser(user);
+        return ResponseEntity.ok(message);
     }
+
 
     @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable Integer id){
         return userService.deleteUser(id);
     }
 
-    @PutMapping("/edit")
-    public User editUser(@RequestBody Integer id, String name, String bio){
-        return userService.editUser(id, name, bio);
+    @PutMapping("/edit/{id}")
+    public User editUser(
+            @PathVariable Integer id,
+            @RequestBody User user
+    ){
+        return userService.editUser(id, user);
     }
 }

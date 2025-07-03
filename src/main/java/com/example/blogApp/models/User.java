@@ -18,12 +18,11 @@ public class User {
     @Column
     private String bio;
 
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Post> posts;
 
-
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Comment> comments;
 

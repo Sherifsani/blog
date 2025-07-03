@@ -1,5 +1,6 @@
 package com.example.blogApp.controller;
 
+import com.example.blogApp.dto.PostDTO;
 import com.example.blogApp.models.Post;
 import com.example.blogApp.service.PostService;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,12 @@ public class PostController {
     }
 
     @GetMapping("/api/posts/get")
-    public List<Post> getAllPosts(){
+    public List<PostDTO> getAllPosts(){
         return postService.getAllPosts();
     }
 
     @GetMapping("/api/posts/get/{id}")
-    public Post getPostById(@PathVariable("id") Long id) {
+    public PostDTO getPostById(@PathVariable("id") Long id) {
         return postService.getPostById(id);
     }
 

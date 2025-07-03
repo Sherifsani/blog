@@ -1,8 +1,11 @@
 package com.example.blogApp.service;
 
+import com.example.blogApp.dto.PostDTO;
 import com.example.blogApp.models.Post;
 import com.example.blogApp.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.blogApp.util.PostMapper;
+
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,14 +26,15 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostDTO> getAllPosts() {
+        return postRepository.findAll().stream().map(PostMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public Post getPostById(Long id){
-        return postRepository.findById(id)
+    public PostDTO getPostById(Long id){
+        Post targePost = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
+        return PostMapper.toDTO(targePost);
     }
 
     @Override

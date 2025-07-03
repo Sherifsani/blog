@@ -1,7 +1,10 @@
 package com.example.blogApp.controller;
 
+import com.example.blogApp.dto.UserDTO;
 import com.example.blogApp.models.User;
 import com.example.blogApp.service.UserService;
+import com.example.blogApp.util.UserMapper;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,32 +20,31 @@ public class UserController {
     }
 
     @GetMapping("/get")
-    public List<User> getAllUsers(){
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/get/{id}")
-    public User getOneUser(@PathVariable Integer id){
+    public UserDTO getOneUser(@PathVariable Integer id) {
         return userService.getOneUser(id);
     }
 
-    @PostMapping(value = "/create", consumes = "application/json", produces = "text/plain")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    @PostMapping(value = "/create", consumes = "application/json")
+    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
+        User user = UserMapper.toEntity(userDTO);
         String message = userService.createUser(user);
         return ResponseEntity.ok(message);
     }
 
-
     @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Integer id){
+    public String deleteUser(@PathVariable Integer id) {
         return userService.deleteUser(id);
     }
 
     @PutMapping("/edit/{id}")
     public User editUser(
             @PathVariable Integer id,
-            @RequestBody User user
-    ){
+            @RequestBody User user) {
         return userService.editUser(id, user);
     }
 }

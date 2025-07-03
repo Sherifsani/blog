@@ -1,13 +1,17 @@
 package com.example.blogApp.service;
 
+import com.example.blogApp.dto.UserDTO;
 import com.example.blogApp.models.User;
 import com.example.blogApp.repository.UserRepository;
+import com.example.blogApp.util.UserMapper;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -15,23 +19,28 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-    @Override
-    public User getOneUser(Integer id){
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public String createUser(User  user){
+    public UserDTO getOneUser(Integer id) {
+        User targetUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return UserMapper.toDTO(targetUser);
+    }
+
+    @Override
+    public String createUser(User user) {
         userRepository.save(user);
         return "user created successfully";
     }
 
     @Override
-    public String deleteUser(Integer id){
-        try{
+    public String deleteUser(Integer id) {
+        try {
             userRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -40,7 +49,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User editUser(Integer id, User user){
+    public User editUser(Integer id, User user) {
         User targetUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
         targetUser.setBio(user.getBio());
         targetUser.setUsername(user.getUsername());

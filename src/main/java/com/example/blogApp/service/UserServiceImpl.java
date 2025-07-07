@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -55,5 +55,11 @@ public class UserServiceImpl implements UserService {
         targetUser.setUsername(user.getUsername());
         userRepository.save(targetUser);
         return user;
+    }
+
+    @Override
+    public User findUserByName(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
 }

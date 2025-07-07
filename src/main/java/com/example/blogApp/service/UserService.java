@@ -11,4 +11,5 @@ public interface UserService {
     String createUser(User user);
     String deleteUser(Integer id);
     User editUser(Integer id, User user);
+    User findUserByName(String username);
 }

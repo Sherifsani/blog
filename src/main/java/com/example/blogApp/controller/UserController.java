@@ -19,12 +19,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/get")
+    @GetMapping
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public UserDTO getOneUser(@PathVariable Integer id) {
         return userService.getOneUser(id);
     }

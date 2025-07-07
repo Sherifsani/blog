@@ -2,19 +2,27 @@ package com.example.blogApp.util;
 
 import com.example.blogApp.dto.PostDTO;
 import com.example.blogApp.models.Post;
+import com.example.blogApp.service.UserService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PostMapper {
-    public static PostDTO toDTO(Post post) {
-        return new PostDTO(post.getTitle(), post.getContent());
-                 
+    private final UserService userService;
+
+    public PostMapper(UserService userService) {
+        this.userService = userService;
     }
 
-    public static Post toEntity(PostDTO postDTO) {
+    public PostDTO toDTO(Post post) {
+        String username = post.getUser() != null ? post.getUser().getUsername() : "Anonymous";
+        return new PostDTO(post.getComments().size(), post.getContent(), post.getTitle() , username);
+    }
+
+    public Post toEntity(PostDTO postDTO) {
         Post post = new Post();
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
-        // Assuming you have a method to find a user by username
-        // post.setUser(userService.findByUsername(postDTO.getAuthor()));
+        post.setUser(userService.findUserByName(postDTO.getUsername()));
         return post;
     }
 }

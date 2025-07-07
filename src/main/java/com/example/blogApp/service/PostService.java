@@ -1,19 +1,17 @@
 package com.example.blogApp.service;
 
 import com.example.blogApp.dto.PostDTO;
-import com.example.blogApp.dto.PostDTO;
-import com.example.blogApp.models.Post;
 
 import java.util.List;
 
 public interface PostService {
-    String createPost(PostDTO postDTO);
+    PostDTO createPost(PostDTO postDTO);
 
     List<PostDTO> getAllPosts();
 
     PostDTO getPostById(Long id);
 
-    Post updatePost(Long id, Post post);
+    PostDTO updatePost(Long id, PostDTO postDTO);
 
-    String deletePost(Long id);
+    void deletePost(Long id);
 }

@@ -1,6 +1,8 @@
 package com.example.blogApp.service;
 
 import com.example.blogApp.dto.PostDTO;
+import com.example.blogApp.exception.PostNotFoundException;
+import com.example.blogApp.exception.UserNotFoundException;
 import com.example.blogApp.models.Post;
 import com.example.blogApp.repository.PostRepository;
 import com.example.blogApp.util.PostMapper;
@@ -23,19 +25,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public String createPost(PostDTO postDTO) {
+    public PostDTO createPost(PostDTO postDTO) {
         try {
             Post post = postMapper.toEntity(postDTO);
-            postRepository.save(post);
-            return "Post created successfully!";
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("User not found")) {
-                return "Failed to create post: User '" + postDTO.getUsername()
-                        + "' does not exist. Please create the user first or use an existing username.";
-            }
-            return "Failed to create post: " + e.getMessage();
+            Post savedPost = postRepository.save(post);
+            return postMapper.toDTO(savedPost);
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException("User '" + postDTO.getUsername()
+                    + "' does not exist. Please create the user first or use an existing username.");
         } catch (Exception e) {
-            return "Failed to create post: " + e.getMessage();
+            throw new RuntimeException("Failed to create post: " + e.getMessage(), e);
         }
     }
 
@@ -49,28 +48,29 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO getPostById(Long id) {
-        Post targePost = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
-        return postMapper.toDTO(targePost);
+        Post targetPost = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + id));
+        return postMapper.toDTO(targetPost);
     }
 
     @Override
-    public Post updatePost(Long id, Post post) {
+    public PostDTO updatePost(Long id, PostDTO postDTO) {
         Post existingPost = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + id));
-        existingPost.setTitle(post.getTitle());
-        existingPost.setContent(post.getContent());
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + id));
+
+        existingPost.setTitle(postDTO.getTitle());
+        existingPost.setContent(postDTO.getContent());
         existingPost.setTimeUpdated(LocalDateTime.now());
 
-        return postRepository.save(existingPost);
+        Post updatedPost = postRepository.save(existingPost);
+        return postMapper.toDTO(updatedPost);
     }
 
     @Override
-    public String deletePost(Long id) {
+    public void deletePost(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + id));
         postRepository.delete(post);
-        return "Post deleted successfully!";
     }
 
 }

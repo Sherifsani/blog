@@ -1,6 +1,7 @@
 package com.example.blogApp.service;
 
 import com.example.blogApp.dto.UserDTO;
+import com.example.blogApp.exception.UserNotFoundException;
 import com.example.blogApp.models.User;
 import com.example.blogApp.repository.UserRepository;
 import com.example.blogApp.util.UserMapper;
@@ -28,7 +29,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getOneUser(Integer id) {
-        User targetUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User targetUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         return UserMapper.toDTO(targetUser);
     }
 
@@ -50,16 +52,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User editUser(Integer id, User user) {
-        User targetUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("user not found"));
+        User targetUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         targetUser.setBio(user.getBio());
         targetUser.setUsername(user.getUsername());
         userRepository.save(targetUser);
-        return user;
+        return targetUser;
     }
 
     @Override
     public User findUserByName(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
     }
 }

@@ -1,8 +1,9 @@
 package com.example.blogApp.controller;
 
 import com.example.blogApp.dto.PostDTO;
-import com.example.blogApp.models.Post;
 import com.example.blogApp.service.PostService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,28 +18,33 @@ public class PostController {
     }
 
     @PostMapping
-    public String createPost(@RequestBody PostDTO postDTO) {
-        return postService.createPost(postDTO);
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
+        PostDTO createdPost = postService.createPost(postDTO);
+        return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<PostDTO> getAllPosts(){
-        return postService.getAllPosts();
+    public ResponseEntity<List<PostDTO>> getAllPosts() {
+        List<PostDTO> posts = postService.getAllPosts();
+        return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{id}")
-    public PostDTO getPostById(@PathVariable("id") Long id) {
-        return postService.getPostById(id);
+    public ResponseEntity<PostDTO> getPostById(@PathVariable("id") Long id) {
+        PostDTO post = postService.getPostById(id);
+        return ResponseEntity.ok(post);
     }
 
     @PutMapping("/update/{id}")
-    public Post updatePost(@PathVariable("id") Long id, @RequestBody Post post) {
-        return postService.updatePost(id, post);
+    public ResponseEntity<PostDTO> updatePost(@PathVariable("id") Long id, @RequestBody PostDTO postDTO) {
+        PostDTO updatedPost = postService.updatePost(id, postDTO);
+        return ResponseEntity.ok(updatedPost);
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deletePost(@PathVariable("id") Long id) {
-        return postService.deletePost(id);
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
+        postService.deletePost(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

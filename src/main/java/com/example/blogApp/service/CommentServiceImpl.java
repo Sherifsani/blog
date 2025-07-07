@@ -1,32 +1,38 @@
 package com.example.blogApp.service;
 
+import com.example.blogApp.dto.CommentDTO;
 import com.example.blogApp.models.Comment;
 import com.example.blogApp.models.Post;
 import com.example.blogApp.repository.CommentRepository;
 import com.example.blogApp.repository.PostRepository;
+import com.example.blogApp.util.CommentMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService{
+    private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentMapper commentMapper, CommentRepository commentRepository, PostRepository postRepository) {
+        this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
     }
 
     @Override
-    public List<Comment> getComments(Long postId){
+    public List<CommentDTO> getComments(Long postId){
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found!"));
-        return targetPost.getComments();
+        return targetPost.getComments().stream().map(commentMapper::toCommentDTO).collect(Collectors.toList());
     }
 
     @Override
-    public String createComment(Long postId, Comment comment){
+    public String createComment(Long postId, CommentDTO commentDTO){
         Post targetPost = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Comment comment = commentMapper.toEntity(commentDTO);
         comment.setPost(targetPost);
         commentRepository.save(comment);
         return "Comment created successfully";
